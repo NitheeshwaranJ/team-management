@@ -98,9 +98,9 @@ This project demonstrates practical experience with Django fundamentals, databas
 
 ## Author
 
-**Your Name**
+**Nitheeshwaran J**
 
-GitHub: https://github.com/YOUR-USERNAME
+GitHub: https://github.com/NitheeshwaranJ
 
 ---
 
