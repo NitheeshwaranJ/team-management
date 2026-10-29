@@ -14,14 +14,16 @@
       {% endif %}
     </tr>
   </thead>
+
   <tbody>
     {% for membership in memberships %}
     <tr>
       <td>
-        {{ membership.user.username }} {% if membership.is_owner %}(owner){%
-        endif %}
+        {{ membership.user.username }} {% if membership.is_owner %}(owner){% endif %}
       </td>
+
       <td>{{ membership.get_role_display }}</td>
+
       {% if can_manage %}
       <td>
         {% if membership.is_owner %} &mdash; {% else %}
@@ -30,25 +32,18 @@
           action="{% url 'member_update_role' project.id membership.id %}"
         >
           {% csrf_token %}
+
           <select
             name="role"
             aria-label="Role for {{ membership.user.username }}"
           >
             {% for value, label in role_choices %}
-            <option
-              value="{{ value }}"
-              {%
-              if
-              membership.role=""
-              ="value"
-              %}selected{%
-              endif
-              %}
-            >
-              {{ label }}
-            </option>
+            <option value="{{ value }}" {% if membership.role == value %}selected{% endif %}>
+    {{ label }}
+</option>
             {% endfor %}
           </select>
+
           <button type="submit">Update role</button>
         </form>
 
@@ -78,5 +73,7 @@
 </form>
 {% endif %}
 
-<p><a href="{% url 'project_detail' project.id %}">Back to Project</a></p>
+<p>
+  <a href="{% url 'project_detail' project.id %}">Back to Project</a>
+</p>
 {% endblock %}
