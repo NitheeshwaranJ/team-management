@@ -1,0 +1,82 @@
+{% extends "accounts/base.html" %} {% block title %}Members - {{ project.name
+}}{% endblock %} {% block content %}
+<h1>Members of {{ project.name }}</h1>
+
+<p>Project owner: {{ project.owner.username }}</p>
+
+<table border="1" cellpadding="6">
+  <thead>
+    <tr>
+      <th>Username</th>
+      <th>Role</th>
+      {% if can_manage %}
+      <th>Actions</th>
+      {% endif %}
+    </tr>
+  </thead>
+  <tbody>
+    {% for membership in memberships %}
+    <tr>
+      <td>
+        {{ membership.user.username }} {% if membership.is_owner %}(owner){%
+        endif %}
+      </td>
+      <td>{{ membership.get_role_display }}</td>
+      {% if can_manage %}
+      <td>
+        {% if membership.is_owner %} &mdash; {% else %}
+        <form
+          method="post"
+          action="{% url 'member_update_role' project.id membership.id %}"
+        >
+          {% csrf_token %}
+          <select
+            name="role"
+            aria-label="Role for {{ membership.user.username }}"
+          >
+            {% for value, label in role_choices %}
+            <option
+              value="{{ value }}"
+              {%
+              if
+              membership.role=""
+              ="value"
+              %}selected{%
+              endif
+              %}
+            >
+              {{ label }}
+            </option>
+            {% endfor %}
+          </select>
+          <button type="submit">Update role</button>
+        </form>
+
+        <form
+          method="post"
+          action="{% url 'member_remove' project.id membership.id %}"
+          onsubmit="return confirm('Remove this member from the project?');"
+        >
+          {% csrf_token %}
+          <button type="submit">Remove</button>
+        </form>
+        {% endif %}
+      </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if can_manage %}
+<h2>Add a member</h2>
+<p>The person must already have an account.</p>
+
+<form method="post">
+  {% csrf_token %} {{ form.as_p }}
+  <button type="submit">Add member</button>
+</form>
+{% endif %}
+
+<p><a href="{% url 'project_detail' project.id %}">Back to Project</a></p>
+{% endblock %}

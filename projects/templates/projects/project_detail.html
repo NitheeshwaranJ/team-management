@@ -13,9 +13,11 @@
 <h2>Tasks</h2>
 
 <p>
-    <a href="{% url 'task_create' project.id %}">+ Create Task</a>
+    <a href="{% url 'project_members' project.id %}">Members</a>
+    {% if can_manage %}
+        | <a href="{% url 'task_create' project.id %}">+ Create Task</a>
+    {% endif %}
 </p>
-
 <h3>Filter Tasks</h3>
 
 <form method="get">
