@@ -1,0 +1,98 @@
+﻿{% extends "accounts/base.html" %}
+
+{% block title %}{{ project.name }}{% endblock %}
+
+{% block content %}
+<h1>{{ project.name }}</h1>
+
+<p>{{ project.description }}</p>
+<p>Project owner: {{ project.owner.username }}</p>
+
+<hr />
+
+<h2>Tasks</h2>
+
+<p>
+    <a href="{% url 'task_create' project.id %}">+ Create Task</a>
+</p>
+
+<h3>Filter Tasks</h3>
+
+<form method="get">
+    <label for="status">Status:</label>
+    <select name="status" id="status">
+        <option value="">All statuses</option>
+        {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                {{ label }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <label for="priority">Priority:</label>
+    <select name="priority" id="priority">
+        <option value="">All priorities</option>
+        {% for value, label in priority_choices %}
+            <option value="{{ value }}" {% if priority_filter == value %}selected{% endif %}>
+                {{ label }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Filter</button>
+    <a href="{% url 'project_detail' project.id %}">Clear filters</a>
+</form>
+
+{% for task in tasks %}
+    <div>
+        <h3>{{ task.title }}</h3>
+        <p>{{ task.description }}</p>
+
+        {% if task.is_overdue %}
+            <strong style="color: red;">OVERDUE</strong>
+        {% endif %}
+
+        <p>Status: {{ task.get_status_display }}</p>
+
+        <form method="post" action="{% url 'task_update_status' project.id task.id %}">
+            {% csrf_token %}
+            <label for="status-{{ task.id }}">Update status:</label>
+
+            <select id="status-{{ task.id }}" name="status">
+                {% for value, label in task.Status.choices %}
+                    <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>
+                        {{ label }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Update Status</button>
+        </form>
+
+        <p>Priority: {{ task.get_priority_display }}</p>
+
+        <p>
+            Assigned to:
+            {% if task.assignee %}
+                {{ task.assignee.username }}
+            {% else %}
+                Unassigned
+            {% endif %}
+        </p>
+
+        <p>
+            Due date:
+            {% if task.due_date %}
+                {{ task.due_date }}
+            {% else %}
+                No due date
+            {% endif %}
+        </p>
+    </div>
+    <hr />
+{% empty %}
+    <p>No tasks created yet. Create your first task!</p>
+{% endfor %}
+
+<a href="{% url 'project_list' %}">Back to Projects</a>
+{% endblock %}

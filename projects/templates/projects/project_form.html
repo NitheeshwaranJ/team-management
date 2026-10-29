@@ -1,0 +1,16 @@
+﻿{% extends "accounts/base.html" %}
+
+{% block title %}Create Project{% endblock %}
+
+{% block content %}
+<h1>Create a Project</h1>
+
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <button type="submit">Save Project</button>
+</form>
+
+<a href="{% url 'project_list' %}">Back to Projects</a>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "accounts/base.html" %}
+
+{% block title %}My Projects{% endblock %}
+
+{% block content %}
+<h1>My Projects</h1>
+
+<p>Logged in as: {{ request.user.username }}</p>
+
+<a href="{% url 'project_create' %}">Create Project</a>
+
+{% if projects %}
+    <ul>
+    {% for project in projects %}
+        <li>
+            <strong>
+                <a href="{% url 'project_detail' project.id %}">
+                    {{ project.name }}
+                </a>
+            </strong>
+            <p>{{ project.description }}</p>
+        </li>
+    {% endfor %}
+    </ul>
+{% else %}
+    <p>No projects yet. Create your first project!</p>
+{% endif %}
+{% endblock %}
